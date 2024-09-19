@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_rawuhgo/screens/camera_screen.dart';
 import 'package:mobile_rawuhgo/screens/history_screen.dart';
 import 'package:mobile_rawuhgo/screens/notification_screen.dart';
 import 'package:mobile_rawuhgo/screens/profile_screen.dart';
