@@ -183,143 +183,159 @@ class _MainpageState extends State<Mainpage> {
                 ),
               ],
             ),
-            Positioned(
-              top: 130, // Atur posisi vertikal sesuai kebutuhan
-              left: 30, // Atur posisi horizontal sesuai kebutuhan
-              child: Container(
-                width: 330,
-                height: 133,
-                decoration: BoxDecoration(
-                  color: Color(0xFF2A5867),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black
-                          .withOpacity(0.2), // Warna bayangan dengan opasitas
-                      spreadRadius: 2, // Jarak sebar bayangan
-                      blurRadius: 6, // Jarak blur bayangan
-                      offset: Offset(0, 4), // Posisi bayangan (x, y)
+            Stack(
+              children: [
+                Positioned(
+                  top: screenHeight * 0.17,
+                  left: screenWidth * 0.1,
+                  right: screenWidth * 0.1,
+                  child: Container(
+                    width: screenWidth * 0.8,
+                    height: screenHeight * 0.16,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF2A5867),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(
+                              0.2), // Warna bayangan dengan opasitas
+                          spreadRadius: 2, // Jarak sebar bayangan
+                          blurRadius: 6, // Jarak blur bayangan
+                          offset: Offset(0, 4), // Posisi bayangan (x, y)
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Kamis, 12 September 2024",
-                          style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 143,
-                            height: 66,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 35,
-                                    height: 35,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Color(0xFF81CCE3),
-                                    ),
-                                    child: Image.asset(
-                                        'assets/img/main_page/checkin.png'),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "CHECK IN",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xFF707070)),
-                                      ),
-                                      Text(
-                                        "08:10 WIB",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xFF707070)),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+                          Text(
+                            "Kamis, 12 September 2024",
+                            style: GoogleFonts.poppins(
+                              fontSize: screenWidth * 0.035,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                           SizedBox(
-                            width: 10,
+                            height: screenHeight * 0.01,
                           ),
-                          Container(
-                            width: 143,
-                            height: 66,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 35,
-                                    height: 35,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Colors.amber,
-                                    ),
-                                    child: Image.asset(
-                                        'assets/img/main_page/checkout.png'),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                          Row(
+                            children: [
+                              Container(
+                                width: screenWidth * 0.35,
+                                height: screenHeight * 0.08,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        "CHECK OUT",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xFF707070)),
+                                      Container(
+                                        width: screenWidth * 0.08,
+                                        height: screenWidth * 0.08,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          color: Color(0xFF81CCE3),
+                                        ),
+                                        child: Image.asset(
+                                            'assets/img/main_page/checkin.png'),
                                       ),
-                                      Text(
-                                        "17:00 WIB",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xFF707070)),
+                                      SizedBox(
+                                        width: screenWidth * 0.01,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "CHECK IN",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: screenWidth * 0.035,
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF707070),
+                                            ),
+                                          ),
+                                          Text(
+                                            "08:10 WIB",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: screenWidth * 0.03,
+                                              fontWeight: FontWeight.w400,
+                                              color: Color(0xFF707070),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
-                                  )
-                                ],
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(
+                                width: screenWidth * 0.02,
+                              ),
+                              Container(
+                                width: screenWidth * 0.35,
+                                height: screenHeight * 0.08,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: screenWidth * 0.08,
+                                        height: screenWidth * 0.08,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          color: Colors.amber,
+                                        ),
+                                        child: Image.asset(
+                                            'assets/img/main_page/checkout.png'),
+                                      ),
+                                      SizedBox(
+                                        width: screenWidth * 0.01,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "CHECK OUT",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: screenWidth * 0.035,
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF707070),
+                                            ),
+                                          ),
+                                          Text(
+                                            "17:00 WIB",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: screenWidth * 0.03,
+                                              fontWeight: FontWeight.w400,
+                                              color: Color(0xFF707070),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
