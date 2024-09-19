@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+        appBar: AppBar(
+      title: Text("ini halaman profile"),
+    ));
   }
 }

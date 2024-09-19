@@ -23,27 +23,35 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 189),
-          child: Column(
-            children: [
-              Container(
-                child: Image.asset('assets/img/splashScreen/splashScreen.png'),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Text(
-                "Rawuh-Go",
-                style: GoogleFonts.dmSans(
-                    fontSize: 32, fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        ),
+      backgroundColor: Color(0xFF212A2E),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          double screenHeight = constraints.maxHeight;
+          double screenWidth = constraints.maxWidth;
+
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/img/splashScreen/splashScreen.png',
+                    width: screenWidth * 0.4,
+                    height: screenHeight * 0.3,
+                  ),
+                ),
+                Text(
+                  "RAWUH-GO",
+                  style: GoogleFonts.dmSans(
+                      fontSize: screenWidth * 0.07,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFFFDDB9)),
+                )
+              ],
+            ),
+          );
+        },
       ),
     );
   }
