@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_rawuhgo/screens/edit_profile.dart';
 import 'package:mobile_rawuhgo/screens/history_screen.dart';
+import 'package:mobile_rawuhgo/screens/login_screen.dart';
 import 'package:mobile_rawuhgo/screens/mainpage.dart';
 import 'package:mobile_rawuhgo/screens/notification_screen.dart';
+import 'package:mobile_rawuhgo/screens/password.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -40,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(255, 255, 255, 0.95),
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.95),
       body: SafeArea(
         child: Column(
           children: [
@@ -55,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         .min, // Ensures the Row takes up only as much space as needed
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                        icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -77,12 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(width: 48), // Placeholder to balance the Row
+                  const SizedBox(width: 48), // Placeholder to balance the Row
                 ],
               ),
             ),
 
-            SizedBox(height: 60), // Jarak antara header dan konten profile
+            const SizedBox(height: 60), // Jarak antara header dan konten profile
 
             // Stack untuk foto profil dan box
             Stack(
@@ -91,15 +94,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Box untuk profil (ukuran 361 x 170)
                 Container(
                   width: 361,
-                  height: 170,
+                  height: 160,
                   decoration: BoxDecoration(
-                    color: Color(0xFFF3F8FF),
+                    color: const Color(0xFFF3F8FF),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                           height:
                               80), // Jarak di dalam box agar sesuai dengan foto di atasnya
                       // Nama dan Jabatan
@@ -134,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: 5, // Border putih di sekeliling foto
                       ),
                     ),
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       radius: 65,
                       backgroundImage: AssetImage(
                           'assets/img/main_page/user_avatar.png'), // Gambar profil dari file yang diupload
@@ -143,13 +146,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            SizedBox(
-                height: 25), // Jarak antara box profil dan menu di bawahnya
+            const SizedBox(height: 1), // Jarak antara box profil dan menu di bawahnya
 
             // Menu Edit Profile, Change Password, Logout
-            buildMenuItem(Icons.person, 'Edit Profile'),
-            buildMenuItem(Icons.lock, 'Change Password'),
-            buildMenuItem(Icons.logout, 'Logout'),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buildMenuItem(
+                      Icons.person, 'Edit Profile', EditProfileScreen()),
+                  buildMenuItem(
+                      Icons.lock, 'Change Password', ChangePasswordScreen()),
+                  buildMenuItem(Icons.logout, 'Logout', LoginScreen()),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -172,21 +183,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             } else {
               // Tampilkan pesan jika izin lokasi ditolak
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                     content: Text('Izin lokasi diperlukan untuk melanjutkan')),
               );
             }
           } else {
             // Tampilkan pesan jika izin kamera ditolak
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                   content: Text('Izin kamera diperlukan untuk melanjutkan')),
             );
           }
         },
-        backgroundColor: Color(0xFFFEC922),
+        backgroundColor: const Color(0xFFFEC922),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        child: Icon(
+        child: const Icon(
           Icons.camera_alt,
           color: Colors.white,
         ),
@@ -200,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             _buildIconButton(0, Icons.home),
             _buildIconButton(1, Icons.access_time),
-            SizedBox(width: 48), // Space for the FloatingActionButton
+            const SizedBox(width: 48), // Space for the FloatingActionButton
             _buildIconButton(2, Icons.notifications),
             _buildIconButton(3, Icons.person),
           ],
@@ -209,20 +220,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget buildMenuItem(IconData icon, String text) {
+  Widget buildMenuItem(IconData icon, String text, Widget destination) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
-        height: 60,
+        height: 50,
         decoration: BoxDecoration(
-          color: Color(0xFFF3F8FF),
+          color: const Color(0xFFF3F8FF),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -233,9 +244,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style:
                 GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.bold),
           ),
-          trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
+          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
           onTap: () {
-            // Logika aksi pada setiap menu
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => destination),
+            );
           },
         ),
       ),
@@ -260,9 +274,9 @@ class CameraScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Camera Screen'),
+        title: const Text('Camera Screen'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Ini adalah layar kamera'),
       ),
     );

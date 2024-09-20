@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import './screens/mainpage.dart';
+import './screens/profile_screen.dart';
 import './screens/splash_screen.dart';
 
 void main() {
@@ -14,6 +16,7 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       routes: {
         Mainpage.routeName: (ctx) => Mainpage(),
+        ProfileScreen.routeName: (ctx) => ProfileScreen(),
       },
     );
   }
