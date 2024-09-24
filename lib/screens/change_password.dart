@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  static const routeName = '/edit-profile';
+class ChangePasswordScreen extends StatefulWidget {
+  static const routeName = '/change-password';
 
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _name = '';
-  String _email = '';
-  String _phone = '';
-  String _position = '';
-  String _country = 'Indonesia';
-  String _gender = 'Male';
-  String _address = '';
+  bool _isOldPasswordVisible = false;
+  bool _isNewPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+
+  String _oldPassword = '';
+  String _newPassword = '';
+  String _confirmPassword = '';
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                // Back button with "Profile" text
+                // Back button with "Change Password" text
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: Row(
@@ -54,7 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ],
                       ),
                       Text(
-                        'Edit Profile',
+                        'Change Password',
                         style: GoogleFonts.dmSans(
                           color: Colors.black,
                           fontSize: 18,
@@ -67,57 +67,49 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
 
-                // Profile Picture with Edit Icon
-                const Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage(
-                          'assets/img/main_page/user_avatar.png'), // Replace with actual profile image
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.yellow,
-                        radius: 16,
-                        child: Icon(
-                          Icons.edit,
-                          size: 18,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
+                // Old Password Field
+                _buildPasswordField(
+                  label: 'Old Password',
+                  isVisible: _isOldPasswordVisible,
+                  onToggleVisibility: () {
+                    setState(() {
+                      _isOldPasswordVisible = !_isOldPasswordVisible;
+                    });
+                  },
+                  onChanged: (value) {
+                    _oldPassword = value;
+                  },
                 ),
 
-                const SizedBox(height: 20),
-
-                // Form fields
-                _buildTextField('Full name', 'Riky Raharjo'),
-                _buildTextField('Position', 'Software Development'),
-                _buildTextField('Email', 'rikyraharjo12@domain.com'),
-                _buildTextField('Phone number', '0883-456-7890', isPhone: true),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildDropdownField(
-                          'Country', ['Indonesia'], _country),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildDropdownField(
-                          'Genre', ['Male', 'Female'], _gender),
-                    ),
-                  ],
+                // New Password Field
+                _buildPasswordField(
+                  label: 'New Password',
+                  isVisible: _isNewPasswordVisible,
+                  onToggleVisibility: () {
+                    setState(() {
+                      _isNewPasswordVisible = !_isNewPasswordVisible;
+                    });
+                  },
+                  onChanged: (value) {
+                    _newPassword = value;
+                  },
                 ),
 
-                _buildTextField(
-                    'Address', 'jl. Yos Sudarso no 98, Jakarta Selatan'),
+                // Confirm Password Field
+                _buildPasswordField(
+                  label: 'Confirm New Password',
+                  isVisible: _isConfirmPasswordVisible,
+                  onToggleVisibility: () {
+                    setState(() {
+                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                    });
+                  },
+                  onChanged: (value) {
+                    _confirmPassword = value;
+                  },
+                ),
 
                 const SizedBox(height: 30),
 
@@ -126,9 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // if (_formKey.currentState!.validate()) {
                       _showSaveDialog(context);
-                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
@@ -156,12 +146,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildTextField(String label, String initialValue,
-      {bool isPhone = false}) {
+  Widget _buildPasswordField({
+    required String label,
+    required bool isVisible,
+    required Function onToggleVisibility,
+    required Function(String) onChanged,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
-        initialValue: initialValue,
+        obscureText: !isVisible,
+        onChanged: onChanged,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: GoogleFonts.dmSans(
@@ -177,50 +172,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               FloatingLabelBehavior.auto, // Auto floating label
           contentPadding: const EdgeInsets.symmetric(
               vertical: 20, horizontal: 16), // Padding adjustment
+          suffixIcon: IconButton(
+            icon: Icon(
+              isVisible ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey[600],
+            ),
+            onPressed: () => onToggleVisibility(),
+          ),
         ),
-        keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $label';
+          }
+          if (label == 'Confirm New Password' && value != _newPassword) {
+            return 'Passwords do not match';
+          }
+          return null;
+        },
       ),
     );
   }
 
-  Widget _buildDropdownField(String label, List<String> options, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: GoogleFonts.dmSans(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          filled: true,
-          fillColor: const Color(0xFFF3F8FF),
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: value,
-            isExpanded: true,
-            onChanged: (newValue) {
-              setState(() {
-                if (label == 'Country') _country = newValue!;
-                if (label == 'Genre') _gender = newValue!;
-              });
-            },
-            items: options.map((String option) {
-              return DropdownMenuItem<String>(
-                value: option,
-                child: Text(option),
-              );
-            }).toList(),
-          ),
-        ),
-      ),
-    );
-  }
-
+  // Pop-up for saving changes
   void _showSaveDialog(BuildContext context) {
     showDialog(
       context: context,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_rawuhgo/screens/change_password.dart';
 import 'package:mobile_rawuhgo/screens/edit_profile.dart';
 import 'package:mobile_rawuhgo/screens/history_screen.dart';
 import 'package:mobile_rawuhgo/screens/login_screen.dart';
 import 'package:mobile_rawuhgo/screens/mainpage.dart';
 import 'package:mobile_rawuhgo/screens/notification_screen.dart';
-import 'package:mobile_rawuhgo/screens/password.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -58,7 +58,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         .min, // Ensures the Row takes up only as much space as needed
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+                        icon: const Icon(Icons.arrow_back_ios,
+                            color: Colors.black),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -85,7 +86,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            const SizedBox(height: 60), // Jarak antara header dan konten profile
+            const SizedBox(
+                height: 60), // Jarak antara header dan konten profile
 
             // Stack untuk foto profil dan box
             Stack(
@@ -146,18 +148,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 1), // Jarak antara box profil dan menu di bawahnya
+            const SizedBox(
+                height: 1), // Jarak antara box profil dan menu di bawahnya
 
             // Menu Edit Profile, Change Password, Logout
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildMenuItem(
-                      Icons.person, 'Edit Profile', EditProfileScreen()),
-                  buildMenuItem(
-                      Icons.lock, 'Change Password', ChangePasswordScreen()),
-                  buildMenuItem(Icons.logout, 'Logout', LoginScreen()),
+                  buildMenuItem(context, Icons.person, 'Edit Profile',
+                      EditProfileScreen()),
+                  buildMenuItem(context, Icons.lock, 'Change Password',
+                      ChangePasswordScreen()),
+                  buildMenuItem(context, Icons.logout, 'Logout', LoginScreen()),
                 ],
               ),
             ),
@@ -220,7 +223,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget buildMenuItem(IconData icon, String text, Widget destination) {
+  Widget buildMenuItem(
+      BuildContext context, IconData icon, String text, Widget destination) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
@@ -246,10 +250,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => destination),
-            );
+            if (text == 'Logout') {
+              _showLogoutDialog(context);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => destination),
+              );
+            }
           },
         ),
       ),
@@ -265,6 +273,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
         icon,
         color: _selectedIndex == index ? Colors.amber : Colors.grey,
       ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            'Logout',
+            style: GoogleFonts.dmSans(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: GoogleFonts.dmSans(fontSize: 14),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'No',
+                style: GoogleFonts.dmSans(
+                  color: Colors.grey[600],
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                ); // Navigate to LoginScreen
+              },
+              child: Text(
+                'Yes',
+                style: GoogleFonts.dmSans(
+                  color: Colors.amber, // Yellow color as per image
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
