@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_rawuhgo/screens/assigment_screen.dart';
 import 'package:mobile_rawuhgo/screens/history_screen.dart';
+import 'package:mobile_rawuhgo/screens/leave_screen.dart';
 import 'package:mobile_rawuhgo/screens/notification_screen.dart';
 import 'package:mobile_rawuhgo/screens/profile_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,6 +22,9 @@ class _MainpageState extends State<Mainpage> {
     HistoryScreen(),
     NotificationScreen(),
     ProfileScreen(),
+    LeaveScreen(),
+    HistoryScreen(),
+    AssigmentScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -166,7 +171,7 @@ class _MainpageState extends State<Mainpage> {
                               ),
                             ),
                             SizedBox(height: 3),
-                            _buildServiceRow(),
+                            _buildServiceRow(context),
                             _buildSectionHeader("Assigment", Icons.task),
                             SizedBox(height: 10),
                             _buildAssignmentCard(),
@@ -427,45 +432,55 @@ class _MainpageState extends State<Mainpage> {
     );
   }
 
-  Widget _buildServiceRow() {
+  Widget _buildServiceRow(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _buildServiceItem("Attendance", "attendance.png"),
-        _buildServiceItem("Leave", "leave.png"),
-        _buildServiceItem("Assigment", "assigment.png"),
+        _buildServiceItem(
+            context, "Attendance", "attendance.png", '/history-screen'),
+        _buildServiceItem(context, "Leave", "leave.png", '/leave-screen'),
+        _buildServiceItem(
+            context, "Assignment", "assigment.png", '/assigment-screen'),
       ],
     );
   }
 
-  Widget _buildServiceItem(String title, String imagePath) {
-    return Column(
-      children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Color(0xFFD9D9D9),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 0,
-                blurRadius: 1,
-                offset: Offset(0, 3),
-              ),
-            ],
+  Widget _buildServiceItem(
+      BuildContext context, String title, String imagePath, String routeName) {
+    return GestureDetector(
+      onTap: () {
+        // Navigasi ke halaman yang sesuai berdasarkan routeName
+        Navigator.pushNamed(context, routeName);
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Color(0xFFD9D9D9),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Image.asset('assets/img/main_page/$imagePath'),
+            ),
           ),
-          child: Center(
-            child: Image.asset('assets/img/main_page/$imagePath'),
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          title,
-          style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500),
-        )
-      ],
+          SizedBox(height: 8),
+          Text(
+            title,
+            style:
+                GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500),
+          )
+        ],
+      ),
     );
   }
 

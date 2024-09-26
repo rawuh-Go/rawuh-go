@@ -34,24 +34,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_ios,
-                                color: Colors.black),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          Text(
-                            'Back',
-                            style: GoogleFonts.dmSans(
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        splashColor:
+                            Colors.grey.withOpacity(0.3), // Efek splash abu-abu
+                        highlightColor: Colors.grey
+                            .withOpacity(0.2), // Warna abu-abu ketika ditekan
+                        borderRadius: BorderRadius.circular(
+                            10), // Menambahkan sedikit radius untuk tampilan lebih halus
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.arrow_back_ios,
                               color: Colors.black,
-                              fontSize: 15,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 1), // Jarak antara ikon dan teks
+                            Text(
+                              'Back',
+                              style: GoogleFonts.dmSans(
+                                color: Colors.black,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Text(
                         'Edit Profile',

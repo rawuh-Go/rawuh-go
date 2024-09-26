@@ -10,29 +10,55 @@ class AttendanceDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 0.90),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Attendance Detail',
-          style: GoogleFonts.dmSans(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: const Color.fromARGB(255, 255, 255, 255),
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      splashColor: Colors.grey.withOpacity(0.3),
+                      highlightColor: Colors.grey.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.black,
+                          ),
+                          const SizedBox(width: 1),
+                          Text(
+                            'Back',
+                            style: GoogleFonts.dmSans(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      'Attendance Detail',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(
+                        width:
+                            48), // You can add another widget here if needed for right side alignment
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
               // Tanggal
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -46,34 +72,43 @@ class AttendanceDetailScreen extends StatelessWidget {
                     style: GoogleFonts.dmSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              // Detail CHECK IN
-              _buildAttendanceDetailCard(
-                'CHECK IN',
-                'early',
-                '08:00:00 WIB',
-                '-7.760040, 110.408550',
-                'Jl. Ring Road Utara, Ngringin, Condongcatur',
-                data['check_in_status'],
-                Colors.green,
-                'assets/img/main_page/absen.png',
-              ),
-              const SizedBox(height: 16),
-              // Detail CHECK OUT
-              _buildAttendanceDetailCard(
-                'CHECK OUT',
-                'late',
-                '17:09:00 WIB',
-                '-7.760040, 110.408550',
-                'Jl. Ring Road Utara, Ngringin, Condongcatur',
-                data['check_out_status'],
-                Colors.red,
-                'assets/img/main_page/absen.png', // Attachment image path
+              // Wrap the rest of the content in SingleChildScrollView
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Detail CHECK IN
+                      _buildAttendanceDetailCard(
+                        'CHECK IN',
+                        'early',
+                        '08:00:00 WIB',
+                        '-7.760040, 110.408550',
+                        'Jl. Ring Road Utara, Ngringin, Condongcatur',
+                        data['check_in_status'],
+                        Colors.green,
+                        'assets/img/main_page/absen.png',
+                      ),
+                      const SizedBox(height: 16),
+                      // Detail CHECK OUT
+                      _buildAttendanceDetailCard(
+                        'CHECK OUT',
+                        'late',
+                        '17:09:00 WIB',
+                        '-7.760040, 110.408550',
+                        'Jl. Ring Road Utara, Ngringin, Condongcatur',
+                        data['check_out_status'],
+                        Colors.red,
+                        'assets/img/main_page/absen.png', // Attachment image path
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

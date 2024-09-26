@@ -53,25 +53,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize
-                        .min, // Ensures the Row takes up only as much space as needed
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios,
-                            color: Colors.black),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      Text(
-                        'Back',
-                        style: GoogleFonts.dmSans(
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    splashColor:
+                        Colors.grey.withOpacity(0.3), // Efek splash abu-abu
+                    highlightColor: Colors.grey
+                        .withOpacity(0.2), // Warna abu-abu ketika ditekan
+                    borderRadius: BorderRadius.circular(
+                        10), // Menambahkan sedikit radius untuk tampilan lebih halus
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.arrow_back_ios,
                           color: Colors.black,
-                          fontSize: 15, // Adjust the font size as needed
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 1), // Jarak antara ikon dan teks
+                        Text(
+                          'Back',
+                          style: GoogleFonts.dmSans(
+                            color: Colors.black,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Text(
                     'Profile',
