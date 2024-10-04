@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-  static const routeName = '/change-password';
-
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
@@ -38,10 +36,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        splashColor:
-                            Colors.grey.withOpacity(0.3), // Efek splash abu-abu
-                        highlightColor: Colors.grey
-                            .withOpacity(0.2), // Warna abu-abu ketika ditekan
+                        splashColor: Colors.grey.withOpacity(0.3),
+                        highlightColor: Colors.grey.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(
                             10), // Menambahkan sedikit radius untuk tampilan lebih halus
                         child: Row(
@@ -50,14 +46,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             Icon(
                               Icons.arrow_back_ios,
                               color: Colors.black,
-                            ),
-                            SizedBox(width: 1), // Jarak antara ikon dan teks
-                            Text(
-                              'Back',
-                              style: GoogleFonts.dmSans(
-                                color: Colors.black,
-                                fontSize: 15,
-                              ),
                             ),
                           ],
                         ),
@@ -130,17 +118,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       _showSaveDialog(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Colors.amber, // Yellow color as per image
+                      backgroundColor: const Color(0xFF2A5867),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(24),
                       ),
                     ),
                     child: Text(
-                      'SAVE',
+                      'Save',
                       style: GoogleFonts.dmSans(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -208,8 +195,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white, // Set background color to white
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10.0), // Rounded corners
           ),
           title: Text(
             'Save Changes',
@@ -243,7 +231,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               child: Text(
                 'Yes',
                 style: GoogleFonts.dmSans(
-                  color: Colors.amber, // Yellow color as per image
+                  color: const Color(0xFF2A5867),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

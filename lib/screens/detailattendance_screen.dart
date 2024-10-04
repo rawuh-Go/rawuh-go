@@ -9,7 +9,7 @@ class AttendanceDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.90),
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.95),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -32,14 +32,6 @@ class AttendanceDetailScreen extends StatelessWidget {
                           const Icon(
                             Icons.arrow_back_ios,
                             color: Colors.black,
-                          ),
-                          const SizedBox(width: 1),
-                          Text(
-                            'Back',
-                            style: GoogleFonts.dmSans(
-                              color: Colors.black,
-                              fontSize: 15,
-                            ),
                           ),
                         ],
                       ),
@@ -64,7 +56,10 @@ class AttendanceDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: const Color(0xFF2A5867),
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
                 ),
                 child: Center(
                   child: Text(
@@ -77,7 +72,6 @@ class AttendanceDetailScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
               // Wrap the rest of the content in SingleChildScrollView
               Expanded(
                 child: SingleChildScrollView(
@@ -129,10 +123,13 @@ class AttendanceDetailScreen extends StatelessWidget {
     String attachmentPath,
   ) {
     return Container(
+      margin: const EdgeInsets.only(
+          top: 0), // Adjust margin to align with the top box
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(
+            0), // No border radius to make it look unified
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),

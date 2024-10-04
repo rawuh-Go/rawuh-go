@@ -1,38 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_rawuhgo/screens/assigment_screen.dart';
-import 'package:mobile_rawuhgo/screens/history_screen.dart';
-import 'package:mobile_rawuhgo/screens/leave_screen.dart';
-import 'package:mobile_rawuhgo/screens/notification_screen.dart';
-import 'package:mobile_rawuhgo/screens/profile_screen.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-class Mainpage extends StatefulWidget {
-  static const routeName = '/main-page';
+import 'profile_screen.dart';
 
-  @override
-  State<Mainpage> createState() => _MainpageState();
-}
-
-class _MainpageState extends State<Mainpage> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _screens = [
-    Mainpage(),
-    HistoryScreen(),
-    NotificationScreen(),
-    ProfileScreen(),
-    LeaveScreen(),
-    HistoryScreen(),
-    AssigmentScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the screen width and height
@@ -47,7 +18,7 @@ class _MainpageState extends State<Mainpage> {
     final spacingBetweenTextAndIcon = screenWidth * 0.2; // 20% of screen width
 
     return Scaffold(
-      backgroundColor: Color(0xFF212A2E),
+      backgroundColor: const Color(0xFF212A2E),
       body: SafeArea(
         child: Stack(
           children: [
@@ -61,7 +32,7 @@ class _MainpageState extends State<Mainpage> {
                     width: 110,
                     height: 22,
                     decoration: BoxDecoration(
-                      color: Color(0xFF2A5867),
+                      color: const Color(0xFF2A5867),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Center(
@@ -128,8 +99,14 @@ class _MainpageState extends State<Mainpage> {
                               width: spacingBetweenTextAndIcon,
                             ),
                             IconButton(
-                              onPressed: () {},
-                              icon: Icon(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProfileScreen()),
+                                );
+                              },
+                              icon: const Icon(
                                 Icons.arrow_forward_ios,
                                 color: Colors.white,
                               ),
@@ -146,7 +123,7 @@ class _MainpageState extends State<Mainpage> {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color.fromRGBO(255, 255, 255, 0.95),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(25),
@@ -160,7 +137,7 @@ class _MainpageState extends State<Mainpage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 50),
+                              padding: const EdgeInsets.only(top: 62),
                               child: Text(
                                 "Office Service",
                                 style: GoogleFonts.dmSans(
@@ -170,14 +147,15 @@ class _MainpageState extends State<Mainpage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 3),
+                            const SizedBox(height: 3),
                             _buildServiceRow(context),
-                            _buildSectionHeader("Assigment", Icons.task),
-                            SizedBox(height: 10),
+                            _buildSectionHeader(context, "Assigment",
+                                Icons.task, '/assigment-screen'),
+                            const SizedBox(height: 10),
                             _buildAssignmentCard(),
-                            _buildSectionHeader(
-                                "Attendance", Icons.access_alarm),
-                            SizedBox(height: 10),
+                            _buildSectionHeader(context, "Attendance",
+                                Icons.access_alarm, '/history'),
+                            const SizedBox(height: 10),
                             _buildAttendanceCard(),
                           ],
                         ),
@@ -195,7 +173,7 @@ class _MainpageState extends State<Mainpage> {
                 width: 330,
                 height: 133,
                 decoration: BoxDecoration(
-                  color: Color(0xFF2A5867),
+                  color: const Color(0xFF2A5867),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -203,7 +181,7 @@ class _MainpageState extends State<Mainpage> {
                           .withOpacity(0.2), // Warna bayangan dengan opasitas
                       spreadRadius: 2, // Jarak sebar bayangan
                       blurRadius: 6, // Jarak blur bayangan
-                      offset: Offset(0, 4), // Posisi bayangan (x, y)
+                      offset: const Offset(0, 4), // Posisi bayangan (x, y)
                     ),
                   ],
                 ),
@@ -217,7 +195,7 @@ class _MainpageState extends State<Mainpage> {
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Row(
@@ -229,7 +207,7 @@ class _MainpageState extends State<Mainpage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15)),
                             child: Padding(
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               child: Row(
                                 children: [
                                   Container(
@@ -237,12 +215,12 @@ class _MainpageState extends State<Mainpage> {
                                     height: 35,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
-                                      color: Color(0xFF81CCE3),
+                                      color: const Color(0xFF81CCE3),
                                     ),
                                     child: Image.asset(
                                         'assets/img/main_page/checkin.png'),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 5,
                                   ),
                                   Column(
@@ -254,14 +232,14 @@ class _MainpageState extends State<Mainpage> {
                                         style: GoogleFonts.poppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            color: Color(0xFF707070)),
+                                            color: const Color(0xFF707070)),
                                       ),
                                       Text(
                                         "08:10 WIB",
                                         style: GoogleFonts.poppins(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
-                                            color: Color(0xFF707070)),
+                                            color: const Color(0xFF707070)),
                                       ),
                                     ],
                                   )
@@ -269,7 +247,7 @@ class _MainpageState extends State<Mainpage> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Container(
@@ -279,7 +257,7 @@ class _MainpageState extends State<Mainpage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15)),
                             child: Padding(
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               child: Row(
                                 children: [
                                   Container(
@@ -292,7 +270,7 @@ class _MainpageState extends State<Mainpage> {
                                     child: Image.asset(
                                         'assets/img/main_page/checkout.png'),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 5,
                                   ),
                                   Column(
@@ -304,14 +282,14 @@ class _MainpageState extends State<Mainpage> {
                                         style: GoogleFonts.poppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            color: Color(0xFF707070)),
+                                            color: const Color(0xFF707070)),
                                       ),
                                       Text(
                                         "17:00 WIB",
                                         style: GoogleFonts.poppins(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
-                                            color: Color(0xFF707070)),
+                                            color: const Color(0xFF707070)),
                                       ),
                                     ],
                                   )
@@ -329,106 +307,6 @@ class _MainpageState extends State<Mainpage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // Meminta izin kamera
-          PermissionStatus cameraStatus = await Permission.camera.request();
-          if (cameraStatus.isGranted) {
-            // Jika izin kamera diberikan, meminta izin lokasi
-            PermissionStatus locationStatus =
-                await Permission.location.request();
-            if (locationStatus.isGranted) {
-              // Jika izin lokasi diberikan, arahkan ke CameraScreen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CameraScreen(),
-                ),
-              );
-            } else {
-              // Tampilkan pesan jika izin lokasi ditolak
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('Izin lokasi diperlukan untuk melanjutkan')),
-              );
-            }
-          } else {
-            // Tampilkan pesan jika izin kamera ditolak
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Izin kamera diperlukan untuk melanjutkan')),
-            );
-          }
-        },
-        backgroundColor: Color(0xFFFEC922),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        child: Icon(
-          Icons.camera_alt,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        elevation: 2,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildIconButton(0, Icons.home),
-            _buildIconButton(1, Icons.access_time),
-            SizedBox(width: 48), // Space for the FloatingActionButton
-            _buildIconButton(2, Icons.notifications),
-            _buildIconButton(3, Icons.person),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildIconButton(int index, IconData icon) {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-        switch (index) {
-          case 0:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Mainpage()), // Arahkan ke MainPage
-            );
-            break;
-          case 1:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      HistoryScreen()), // Arahkan ke HistoryScreen
-            );
-            break;
-          case 2:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      NotificationScreen()), // Arahkan ke NotificationScreen
-            );
-            break;
-          case 3:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ProfileScreen()), // Arahkan ke ProfileScreen
-            );
-            break;
-        }
-      },
-      icon: Icon(
-        icon,
-        color: _selectedIndex == index ? Colors.amber : Colors.grey,
-      ),
     );
   }
 
@@ -436,11 +314,12 @@ class _MainpageState extends State<Mainpage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _buildServiceItem(
-            context, "Attendance", "attendance.png", '/history-screen'),
+        _buildServiceItem(context, "Attendance", "attendance.png", '/history'),
         _buildServiceItem(context, "Leave", "leave.png", '/leave-screen'),
         _buildServiceItem(
             context, "Assignment", "assigment.png", '/assigment-screen'),
+        _buildServiceItem(
+            context, "Todo List", "todo_list.png", '/assigment-screen'),
       ],
     );
   }
@@ -455,17 +334,17 @@ class _MainpageState extends State<Mainpage> {
       child: Column(
         children: [
           Container(
-            width: 80,
-            height: 80,
+            width: 55,
+            height: 55,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Color(0xFFD9D9D9),
+              color: const Color(0xFFF1F3F6),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.2),
                   spreadRadius: 0,
                   blurRadius: 1,
-                  offset: Offset(0, 3),
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
@@ -473,7 +352,7 @@ class _MainpageState extends State<Mainpage> {
               child: Image.asset('assets/img/main_page/$imagePath'),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             title,
             style:
@@ -484,13 +363,14 @@ class _MainpageState extends State<Mainpage> {
     );
   }
 
-  Widget _buildSectionHeader(String title, IconData icon) {
+  Widget _buildSectionHeader(
+      BuildContext context, String title, IconData icon, String routeName) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Row(
         children: [
           Icon(icon, size: 24), // Menggunakan Icon widget
-          SizedBox(width: 5),
+          const SizedBox(width: 5),
           Text(
             title,
             style: GoogleFonts.dmSans(
@@ -499,13 +379,26 @@ class _MainpageState extends State<Mainpage> {
               color: Colors.black,
             ),
           ),
-          Spacer(),
-          Text(
-            "View All",
-            style: GoogleFonts.dmSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w300,
-              color: Colors.blue,
+          const Spacer(),
+          Material(
+            color: Colors.transparent, // Make sure the material is transparent
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8), // Set the border radius
+              onTap: () {
+                Navigator.pushNamed(context, routeName);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(
+                    8.0), // Add some padding for better touch area
+                child: Text(
+                  "View All",
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -517,19 +410,19 @@ class _MainpageState extends State<Mainpage> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFF1F3F6),
+        color: const Color(0xFFF1F3F6),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 1,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -550,16 +443,17 @@ class _MainpageState extends State<Mainpage> {
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xFF7B7B7B),
+                        color: const Color(0xFF7B7B7B),
                       ),
                     ),
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Color(0xFFFEC922).withOpacity(0.24),
+                    color: const Color(0xFFFEC922).withOpacity(0.24),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -567,18 +461,18 @@ class _MainpageState extends State<Mainpage> {
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
                       fontWeight: FontWeight.w300,
-                      color: Color(0xFFFEC922),
+                      color: const Color(0xFFFEC922),
                     ),
                   ),
                 ),
               ],
             ),
-            Divider(color: Colors.grey, thickness: 1),
+            const Divider(color: Colors.grey, thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Icon(Icons.calendar_month_sharp, size: 15),
-                SizedBox(width: 10),
+                const Icon(Icons.calendar_month_sharp, size: 15),
+                const SizedBox(width: 10),
                 Text(
                   "Mon, 10 July 2022",
                   style: GoogleFonts.workSans(
@@ -598,19 +492,19 @@ class _MainpageState extends State<Mainpage> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFF1F3F6),
+        color: const Color(0xFFF1F3F6),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 1,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -623,11 +517,12 @@ class _MainpageState extends State<Mainpage> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Color(0xFF64C6E4).withOpacity(0.24),
+                    color: const Color(0xFF64C6E4).withOpacity(0.24),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -635,13 +530,13 @@ class _MainpageState extends State<Mainpage> {
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
                       fontWeight: FontWeight.w300,
-                      color: Color(0xFF64C6E4),
+                      color: const Color(0xFF64C6E4),
                     ),
                   ),
                 ),
               ],
             ),
-            Divider(color: Colors.grey, thickness: 1),
+            const Divider(color: Colors.grey, thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -663,7 +558,7 @@ class _MainpageState extends State<Mainpage> {
           style: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF707070),
+            color: const Color(0xFF707070),
           ),
         ),
         Text(
@@ -671,24 +566,10 @@ class _MainpageState extends State<Mainpage> {
           style: GoogleFonts.poppins(
             fontSize: 12,
             fontWeight: FontWeight.w400,
-            color: Color(0xFF707070),
+            color: const Color(0xFF707070),
           ),
         ),
       ],
-    );
-  }
-}
-
-class CameraScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Camera Screen'),
-      ),
-      body: Center(
-        child: Text('Ini adalah layar kamera'),
-      ),
     );
   }
 }

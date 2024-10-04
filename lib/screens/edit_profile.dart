@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  static const routeName = '/edit-profile';
-
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
@@ -51,14 +49,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               Icons.arrow_back_ios,
                               color: Colors.black,
                             ),
-                            const SizedBox(width: 1), // Jarak antara ikon dan teks
-                            Text(
-                              'Back',
-                              style: GoogleFonts.dmSans(
-                                color: Colors.black,
-                                fontSize: 15,
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -91,7 +81,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       bottom: 0,
                       right: 0,
                       child: CircleAvatar(
-                        backgroundColor: Colors.yellow,
+                        backgroundColor: Color(0xFF212A2E),
                         radius: 16,
                         child: Icon(
                           Icons.edit,
@@ -140,17 +130,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       // }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Colors.amber, // Yellow color as per image
+                      backgroundColor: const Color(0xFF2A5867),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(24),
                       ),
                     ),
                     child: Text(
-                      'SAVE',
+                      'Update Profile',
                       style: GoogleFonts.dmSans(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -181,7 +170,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             borderRadius: BorderRadius.circular(8),
           ),
           filled: true,
-          fillColor: const Color(0xFFF3F8FF),
+          fillColor: const Color(0xFFF1F3F6),
           floatingLabelBehavior:
               FloatingLabelBehavior.auto, // Auto floating label
           contentPadding: const EdgeInsets.symmetric(
@@ -206,7 +195,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             borderRadius: BorderRadius.circular(8),
           ),
           filled: true,
-          fillColor: const Color(0xFFF3F8FF),
+          fillColor: const Color(0xFFF1F3F6),
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
@@ -235,8 +224,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white, // Set background color to white
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10.0), // Rounded corners
           ),
           title: Text(
             'Save Changes',
@@ -270,7 +260,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: Text(
                 'Yes',
                 style: GoogleFonts.dmSans(
-                  color: Colors.amber, // Yellow color as per image
+                  color: const Color(0xFF2A5867),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

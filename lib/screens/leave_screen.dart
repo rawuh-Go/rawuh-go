@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LeaveScreen extends StatefulWidget {
-  static const routeName = '/leave-screen';
+import '../main.dart';
+import 'applyleave_screen.dart';
+import 'detailleave_screen.dart';
 
+class LeaveScreen extends StatefulWidget {
   @override
   State<LeaveScreen> createState() => _LeaveScreenState();
 }
@@ -16,30 +18,25 @@ class _LeaveScreenState extends State<LeaveScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // AppBar section with back button and title
+            // AppBar section with back button and leaveType
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              padding: const EdgeInsets.only(
+                  top: 30, left: 16, right: 30), //jarak atas
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainScreen()),
+                      );
                     },
-                    child: Row(
+                    child: const Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.arrow_back_ios,
                           color: Colors.black,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          'Back',
-                          style: GoogleFonts.dmSans(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
                         ),
                       ],
                     ),
@@ -65,27 +62,30 @@ class _LeaveScreenState extends State<LeaveScreen> {
                   children: const [
                     LeaveCard(
                       date: 'Tuesday, 8 September 2024',
-                      title: 'Sick Leave',
-                      description: 'Opname di Rs harapan',
-                      leaveDate: '8 Sep 2024',
+                      leaveType: 'Sick Leave',
+                      reason: 'Opname di Rs harapan',
+                      startDate: '8 Sep 2024',
+                      endDate: '',
                       attachmentCount: 1,
                       status: 'Approved',
                       statusColor: Colors.green,
                     ),
                     LeaveCard(
                       date: 'Thursday, 19 September 2024',
-                      title: 'Marriage Leave',
-                      description: 'Cuti menikah 3 hari',
-                      leaveDate: '27 Sep 2024 - 29 Sep 2024',
+                      leaveType: 'Marriage Leave',
+                      reason: 'Cuti menikah 3 hari',
+                      startDate: '27 Sep 2024',
+                      endDate: '29 Sep 2024',
                       attachmentCount: 1,
                       status: 'Pending',
                       statusColor: Colors.orange,
                     ),
                     LeaveCard(
                       date: 'Wednesday, 11 September 2024',
-                      title: 'Sick Leave',
-                      description: 'Sakit flu',
-                      leaveDate: '11 Aug 2024',
+                      leaveType: 'Sick Leave',
+                      reason: 'Sakit flu',
+                      startDate: '11 Aug 2024',
+                      endDate: '',
                       attachmentCount: 0,
                       status: 'Rejected',
                       statusColor: Colors.red,
@@ -99,10 +99,20 @@ class _LeaveScreenState extends State<LeaveScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add new leave request action
+          // Navigate to ApplyLeaveScreen when the button is pressed
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ApplyLeaveScreen(),
+            ),
+          );
         },
-        backgroundColor: Colors.yellow[700],
-        child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFF2A5867),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        shape: const CircleBorder(),
       ),
     );
   }
@@ -110,18 +120,20 @@ class _LeaveScreenState extends State<LeaveScreen> {
 
 class LeaveCard extends StatelessWidget {
   final String date;
-  final String title;
-  final String description;
-  final String leaveDate;
+  final String leaveType;
+  final String reason;
+  final String startDate;
+  final String endDate;
   final int attachmentCount;
   final String status;
   final Color statusColor;
 
   const LeaveCard({
     required this.date,
-    required this.title,
-    required this.description,
-    required this.leaveDate,
+    required this.leaveType,
+    required this.reason,
+    required this.startDate,
+    required this.endDate,
     required this.attachmentCount,
     required this.status,
     required this.statusColor,
@@ -168,6 +180,7 @@ class LeaveCard extends StatelessWidget {
           ),
           // Card content
           Card(
+            color: Colors.white,
             margin:
                 EdgeInsets.zero, // Align the card content to the date header
             shape: RoundedRectangleBorder(
@@ -176,13 +189,28 @@ class LeaveCard extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 // Navigate to detail page for leave
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailLeaveScreen(
+                      date: date,
+                      leaveType: leaveType,
+                      reason: reason,
+                      startDate: startDate,
+                      endDate: endDate,
+                      attachmentCount: attachmentCount,
+                      status: status,
+                      statusColor: statusColor,
+                    ),
+                  ),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Main content with title, description, and leave date
+                    // Main content with leaveType, reason, and leave date
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -191,19 +219,25 @@ class LeaveCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                title,
+                                leaveType,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
                               ),
-                              Text(description),
+                              Text(reason),
                               const SizedBox(height: 8),
                               Row(
                                 children: [
                                   const Icon(Icons.calendar_today, size: 16),
                                   const SizedBox(width: 4),
-                                  Text(leaveDate),
+                                  Text(startDate),
+                                  const SizedBox(
+                                      width:
+                                          10), // Space between startDate and endDate
+                                  const Text('-'), // Separator
+                                  const SizedBox(width: 10),
+                                  Text(endDate),
                                 ],
                               ),
                               if (attachmentCount > 0)
@@ -216,6 +250,12 @@ class LeaveCard extends StatelessWidget {
                                 ),
                             ],
                           ),
+                        ),
+                        // Icon forward_ios added here
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Colors.grey, // Adjust color as needed
                         ),
                       ],
                     ),
@@ -241,7 +281,7 @@ class LeaveCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                   ],
                 ),
               ),

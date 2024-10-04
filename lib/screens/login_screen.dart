@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../color_scheme.dart';
-import '../screens/mainpage.dart';
+
+import '../main.dart'; // Import MainScreen
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,61 +14,73 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Mengambil ukuran layar
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Menyesuaikan ukuran font dan padding berdasarkan ukuran layar
+    double titleFontSize = screenWidth * 0.08; // Menyesuaikan ukuran judul
+    double fieldWidth = screenWidth * 0.8; // Menyesuaikan lebar text field
+    double buttonHeight =
+        screenHeight * 0.07; // Menyesuaikan tinggi tombol login
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(50),
+            padding: EdgeInsets.all(screenWidth * 0.1), // Responsif padding
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Logo or image in the center
                 Center(
                   child: Image.asset("assets/img/loginScreen/login_page.png"),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: screenHeight * 0.02,
                 ),
+                // Title
                 Text(
                   "Login",
                   style: GoogleFonts.poppins(
-                    fontSize: 28,
+                    fontSize: titleFontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(
-                  height: 45,
+                  height: screenHeight * 0.05,
                 ),
+                // Username text field
                 Container(
-                  width: 290,
-                  height: 45,
+                  width: fieldWidth,
+                  height: screenHeight * 0.07,
                   decoration: BoxDecoration(
-                    color: Colors.white, // Warna putih agar bagian dalam bersih
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.grey), // Warna border
+                    border: Border.all(color: Colors.grey),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2), // Warna shadow
-                        spreadRadius:
-                            2, // Mengatur seberapa jauh shadow menyebar
-                        blurRadius: 6, // Blur untuk shadow yang lebih halus
-                        offset: Offset(0, 3), // Membuat bayangan sedikit turun
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
                       ),
                     ],
                   ),
                   child: TextField(
-                    cursorColor: Color(0xFF2A5867), // Warna kursor
+                    cursorColor: Color(0xFF2A5867),
                     decoration: InputDecoration(
                       hintText: "username",
                       hintStyle: GoogleFonts.mulish(
-                          fontSize: 20, fontWeight: FontWeight.w400),
+                          fontSize: 16, fontWeight: FontWeight.w400),
                       contentPadding: EdgeInsets.symmetric(vertical: 10),
-                      border: InputBorder.none, // Menghilangkan border default
+                      border: InputBorder.none,
                       prefixIcon: Padding(
-                        padding: const EdgeInsets.all(
-                            8.0), // Menyesuaikan padding ikon
+                        padding: const EdgeInsets.all(8.0),
                         child: Image.asset(
-                          'assets/img/icons/form1.png', // Ikon dari asset
+                          'assets/img/icons/form1.png',
                           width: 20,
                           height: 20,
                         ),
@@ -78,31 +89,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 33,
+                  height: screenHeight * 0.05,
                 ),
+                // Password text field
                 Container(
-                  width: 290,
-                  height: 45,
+                  width: fieldWidth,
+                  height: screenHeight * 0.07,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: Colors.grey),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2), // Warna shadow
-                        spreadRadius:
-                            2, // Mengatur seberapa jauh shadow menyebar
-                        blurRadius: 6, // Blur untuk shadow yang lebih halus
-                        offset: Offset(0, 3), // Membuat bayangan sedikit turun
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
                       ),
                     ],
                   ),
                   child: TextField(
+                    obscureText: isOpen,
                     cursorColor: Color(0xFF2A5867),
                     decoration: InputDecoration(
-                      hintText: "........",
+                      hintText: "password",
                       hintStyle: GoogleFonts.mulish(
-                          fontSize: 20, fontWeight: FontWeight.w400),
+                          fontSize: 16, fontWeight: FontWeight.w400),
                       contentPadding: EdgeInsets.symmetric(vertical: 10),
                       border: InputBorder.none,
                       prefixIcon: Padding(
@@ -130,15 +142,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 13,
+                  height: screenHeight * 0.02,
                 ),
+                // Remember me checkbox
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "remember me",
                       style: GoogleFonts.poppins(
-                          fontSize: 14, fontWeight: FontWeight.w400),
+                          fontSize: 15, fontWeight: FontWeight.w400),
                     ),
                     Checkbox(
                       value: isRememberMeChecked,
@@ -147,24 +160,26 @@ class _LoginScreenState extends State<LoginScreen> {
                           isRememberMeChecked = value ?? false;
                         });
                       },
-                      activeColor:
-                          Color(0xFF2A5867), // Warna checkbox saat aktif
+                      activeColor: Color(0xFF2A5867),
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 47,
+                  height: screenHeight * 0.05,
                 ),
+                // Login button
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).pushNamed(Mainpage.routeName);
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => MainScreen()),
+                    );
                   },
                   child: Container(
-                    height: 50,
-                    width: 291,
+                    height: buttonHeight,
+                    width: fieldWidth,
                     decoration: BoxDecoration(
-                      color: ColButton,
-                      borderRadius: BorderRadius.circular(30),
+                      color: Color(0xFF2A5867),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Center(
                       child: Text(
@@ -172,14 +187,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: GoogleFonts.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: ColBackground),
+                            color: Colors.white),
                       ),
                     ),
                   ),
                 ),
                 SizedBox(
-                  height: 27,
+                  height: screenHeight * 0.03,
                 ),
+                // Forgot password and contact admin row
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -188,7 +204,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         "forgot password?",
                         style: GoogleFonts.poppins(
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
                             color: Colors.black),
                       ),
                       SizedBox(
@@ -198,12 +213,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         "contact admin",
                         style: GoogleFonts.poppins(
                             fontSize: 14,
-                            color: Colors.amber,
-                            fontWeight: FontWeight.w400),
-                      )
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

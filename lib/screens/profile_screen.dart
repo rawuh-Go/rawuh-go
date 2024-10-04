@@ -1,49 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_rawuhgo/screens/change_password.dart';
-import 'package:mobile_rawuhgo/screens/edit_profile.dart';
-import 'package:mobile_rawuhgo/screens/history_screen.dart';
-import 'package:mobile_rawuhgo/screens/login_screen.dart';
-import 'package:mobile_rawuhgo/screens/mainpage.dart';
-import 'package:mobile_rawuhgo/screens/notification_screen.dart';
-import 'package:permission_handler/permission_handler.dart';
+
+import '../main.dart';
+import 'change_password.dart';
+import 'edit_profile.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  static const routeName = '/profile-screen';
-
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _selectedIndex = 3; // Set the initial index to 3 for ProfileScreen
-
-  final List<Widget> _screens = [
-    Mainpage(),
-    HistoryScreen(),
-    NotificationScreen(),
-    ProfileScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index != 3) {
-      // Hindari push ke ProfileScreen ketika sudah di ProfileScreen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => _screens[index],
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.95),
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.50),
       body: SafeArea(
         child: Column(
           children: [
@@ -55,7 +27,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainScreen()),
+                      );
                     },
                     splashColor:
                         Colors.grey.withOpacity(0.3), // Efek splash abu-abu
@@ -63,20 +38,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         .withOpacity(0.2), // Warna abu-abu ketika ditekan
                     borderRadius: BorderRadius.circular(
                         10), // Menambahkan sedikit radius untuk tampilan lebih halus
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.arrow_back_ios,
                           color: Colors.black,
-                        ),
-                        SizedBox(width: 1), // Jarak antara ikon dan teks
-                        Text(
-                          'Back',
-                          style: GoogleFonts.dmSans(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
                         ),
                       ],
                     ),
@@ -99,28 +66,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Stack untuk foto profil dan box
             Stack(
-              clipBehavior: Clip.none, // Supaya gambar di luar box terlihat
+              clipBehavior: Clip.none,
               children: [
-                // Box untuk profil (ukuran 361 x 170)
+                // Box untuk profil
                 Container(
-                  width: 361,
-                  height: 160,
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3F8FF),
+                    color: const Color(0xFF212A2E),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                          height:
-                              80), // Jarak di dalam box agar sesuai dengan foto di atasnya
-                      // Nama dan Jabatan
+                      const SizedBox(height: 5),
                       Text(
                         'Riky Raharjo',
                         style: GoogleFonts.dmSans(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                       Text(
@@ -133,32 +98,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
+
                 // Gambar user yang berada di atas box
                 Positioned(
                   top: -50, // Agar gambar berada di luar box
-                  left: 110, // Mengatur posisi horizontal
+                  left: (MediaQuery.of(context).size.width / 2) - 60,
                   child: Container(
-                    width: 140,
-                    height: 140,
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.white,
-                        width: 5, // Border putih di sekeliling foto
+                        width: 2, // Border putih di sekeliling foto
                       ),
                     ),
                     child: const CircleAvatar(
-                      radius: 65,
-                      backgroundImage: AssetImage(
-                          'assets/img/main_page/user_avatar.png'), // Gambar profil dari file yang diupload
+                      radius: 25,
+                      backgroundImage:
+                          AssetImage('assets/img/main_page/user_avatar.png'),
+                    ),
+                  ),
+                ),
+
+                // Kotak hijau untuk status dan office hours berada setengah di dalam dan setengah di luar
+                Positioned(
+                  bottom: -10, // Membuat kotak sebagian keluar dari box profil
+                  left: (MediaQuery.of(context).size.width *
+                      0.05), // Menempatkan kotak di dalam margin yang sesuai
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2A5867),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Status:',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'WFA',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'office hours:',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '08:00 - 16:00',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-                height: 1), // Jarak antara box profil dan menu di bawahnya
 
+            // Jarak antara box profil dan menu di bawahnya
+            const SizedBox(height: 0.02),
             // Menu Edit Profile, Change Password, Logout
             Expanded(
               child: Column(
@@ -175,59 +202,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // Meminta izin kamera
-          PermissionStatus cameraStatus = await Permission.camera.request();
-          if (cameraStatus.isGranted) {
-            // Jika izin kamera diberikan, meminta izin lokasi
-            PermissionStatus locationStatus =
-                await Permission.location.request();
-            if (locationStatus.isGranted) {
-              // Jika izin lokasi diberikan, arahkan ke CameraScreen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CameraScreen(),
-                ),
-              );
-            } else {
-              // Tampilkan pesan jika izin lokasi ditolak
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Izin lokasi diperlukan untuk melanjutkan')),
-              );
-            }
-          } else {
-            // Tampilkan pesan jika izin kamera ditolak
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Izin kamera diperlukan untuk melanjutkan')),
-            );
-          }
-        },
-        backgroundColor: const Color(0xFFFEC922),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        child: const Icon(
-          Icons.camera_alt,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        elevation: 2,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildIconButton(0, Icons.home),
-            _buildIconButton(1, Icons.access_time),
-            const SizedBox(width: 48), // Space for the FloatingActionButton
-            _buildIconButton(2, Icons.notifications),
-            _buildIconButton(3, Icons.person),
-          ],
-        ),
-      ),
     );
   }
 
@@ -238,19 +212,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Container(
         height: 50,
         decoration: BoxDecoration(
-          color: const Color(0xFFF3F8FF),
+          color: const Color(0xFFF1F3F6),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
+              spreadRadius: 1,
               blurRadius: 5,
               offset: const Offset(0, 3),
             ),
           ],
         ),
         child: ListTile(
-          leading: Icon(icon, color: Colors.amber),
+          leading: Icon(icon, color: const Color(0xFF2A5867)),
           title: Text(
             text,
             style:
@@ -272,25 +246,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildIconButton(int index, IconData icon) {
-    return IconButton(
-      onPressed: () {
-        _onItemTapped(index); // Refactor ke metode terpisah
-      },
-      icon: Icon(
-        icon,
-        color: _selectedIndex == index ? Colors.amber : Colors.grey,
-      ),
-    );
-  }
-
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white, // Set background color to white
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10.0), // Rounded corners
           ),
           title: Text(
             'Logout',
@@ -327,7 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Text(
                 'Yes',
                 style: GoogleFonts.dmSans(
-                  color: Colors.amber, // Yellow color as per image
+                  color: const Color(0xFF2A5867), // Yellow color as per image
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -336,20 +299,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         );
       },
-    );
-  }
-}
-
-class CameraScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Camera Screen'),
-      ),
-      body: const Center(
-        child: Text('Ini adalah layar kamera'),
-      ),
     );
   }
 }

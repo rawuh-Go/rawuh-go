@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Menunda navigasi ke LoginPage selama 3 detik
-    Timer(Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF212A2E),
+      backgroundColor: const Color(0xFF212A2E),
       body: LayoutBuilder(
         builder: (context, constraints) {
           double screenHeight = constraints.maxHeight;
@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   style: GoogleFonts.dmSans(
                       fontSize: screenWidth * 0.07,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFFFFDDB9)),
+                      color: const Color(0xFFFFDDB9)),
                 )
               ],
             ),

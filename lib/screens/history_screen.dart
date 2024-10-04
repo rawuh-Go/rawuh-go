@@ -1,42 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_rawuhgo/screens/detailattendance_screen.dart';
-import 'package:mobile_rawuhgo/screens/mainpage.dart';
-import 'package:mobile_rawuhgo/screens/notification_screen.dart';
-import 'package:mobile_rawuhgo/screens/profile_screen.dart';
-import 'package:permission_handler/permission_handler.dart';
+
+import '../color_scheme.dart';
+import '../main.dart';
+import 'detailattendance_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
-  static const routeName = '/history-screen';
-
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  int _selectedIndex = 1; // Set the initial index to 1 for HistoryScreen
-
-  final List<Widget> _screens = [
-    Mainpage(),
-    HistoryScreen(),
-    NotificationScreen(),
-    ProfileScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index != 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => _screens[index],
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,29 +25,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
+                    borderRadius: BorderRadius.circular(8),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainScreen()),
+                      );
                     },
                     splashColor:
                         Colors.grey.withOpacity(0.3), // Efek splash abu-abu
                     highlightColor: Colors.grey
-                        .withOpacity(0.2), // Warna abu-abu ketika ditekan
-                    borderRadius: BorderRadius.circular(
-                        10), // Menambahkan sedikit radius untuk tampilan lebih halus
+                        .withOpacity(0.2),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.arrow_back_ios,
                           color: Colors.black,
-                        ),
-                        SizedBox(width: 1), // Jarak antara ikon dan teks
-                        Text(
-                          'Back',
-                          style: GoogleFonts.dmSans(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
                         ),
                       ],
                     ),
@@ -106,8 +74,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: data['color'],
+                        color:
+                            Colors.white, // Set background color menjadi putih
                         borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: const Color(
+                              0xFF2A5867), // Tambahkan border abu-abu
+                          width: 1.0, // Set tebal border
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,101 +145,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          PermissionStatus cameraStatus = await Permission.camera.request();
-          if (cameraStatus.isGranted) {
-            PermissionStatus locationStatus =
-                await Permission.location.request();
-            if (locationStatus.isGranted) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CameraScreen(),
-                ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Izin lokasi diperlukan untuk melanjutkan')),
-              );
-            }
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Izin kamera diperlukan untuk melanjutkan')),
-            );
-          }
-        },
-        backgroundColor: const Color(0xFFFEC922),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        child: const Icon(
-          Icons.camera_alt,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        elevation: 2,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildIconButton(0, Icons.home),
-            _buildIconButton(1, Icons.access_time),
-            SizedBox(width: 48), // Space for the FloatingActionButton
-            _buildIconButton(2, Icons.notifications),
-            _buildIconButton(3, Icons.person),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildIconButton(int index, IconData icon) {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-        switch (index) {
-          case 0:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Mainpage()), // Arahkan ke MainPage
-            );
-            break;
-          case 1:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      HistoryScreen()), // Arahkan ke HistoryScreen
-            );
-            break;
-          case 2:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      NotificationScreen()), // Arahkan ke NotificationScreen
-            );
-            break;
-          case 3:
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ProfileScreen()), // Arahkan ke ProfileScreen
-            );
-            break;
-        }
-      },
-      icon: Icon(
-        icon,
-        color: _selectedIndex == index ? Colors.amber : Colors.grey,
-      ),
     );
   }
 
@@ -325,7 +204,6 @@ final List<Map<String, dynamic>> attendanceData = [
     'check_out_status': 'Leaves',
     'check_out_time': '-',
     'check_out_color': Colors.amber,
-    'color': const Color(0xFFFFF4D5),
   },
   {
     'day': 'Friday, 09 September 2024',
@@ -335,7 +213,6 @@ final List<Map<String, dynamic>> attendanceData = [
     'check_out_status': 'early',
     'check_out_time': '16:44:05 WIB',
     'check_out_color': Colors.green,
-    'color': const Color(0xFFD9F8F5),
   },
   {
     'day': 'Monday, 09 September 2024',
@@ -345,7 +222,6 @@ final List<Map<String, dynamic>> attendanceData = [
     'check_out_status': 'late',
     'check_out_time': '17:09:00 WIB',
     'check_out_color': Colors.red,
-    'color': const Color(0xFFD9F8F5),
   },
   {
     'day': 'Monday, 09 September 2024',
@@ -355,7 +231,6 @@ final List<Map<String, dynamic>> attendanceData = [
     'check_out_status': 'late',
     'check_out_time': '17:09:00 WIB',
     'check_out_color': Colors.red,
-    'color': const Color(0xFFFFF4D5),
   },
   {
     'day': 'Monday, 09 September 2024',
@@ -365,20 +240,5 @@ final List<Map<String, dynamic>> attendanceData = [
     'check_out_status': 'late',
     'check_out_time': '17:09:00 WIB',
     'check_out_color': Colors.red,
-    'color': const Color(0xFFFFF4D5),
   },
 ];
-
-class CameraScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Camera Screen'),
-      ),
-      body: const Center(
-        child: Text('Ini adalah layar kamera'),
-      ),
-    );
-  }
-}
