@@ -12,7 +12,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _email = '';
   String _phone = '';
   String _position = '';
-  String _country = 'Indonesia';
+  String _country = 'indonesia';
   String _gender = 'Male';
   String _address = '';
 
@@ -96,16 +96,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(height: 20),
 
                 // Form fields
-                _buildTextField('Full name', 'Riky Raharjo'),
+                _buildTextField('Full name', 'Raden'),
                 _buildTextField('Position', 'Software Development'),
-                _buildTextField('Email', 'rikyraharjo12@domain.com'),
+                _buildTextField('Email', 'raden.rawuhgo@gmail.com'),
                 _buildTextField('Phone number', '0883-456-7890', isPhone: true),
 
                 Row(
                   children: [
                     Expanded(
                       child: _buildDropdownField(
-                          'Country', ['Indonesia'], _country),
+                          'Country', ['Indonesia', 'Jepang', 'Singapura'], _country),
                     ),
                     const SizedBox(width: 16),
                     Expanded(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 import 'change_password.dart';
@@ -12,6 +15,27 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String userName = '';
+  String jobPosition = '';
+
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  // Fungsi untuk mengambil data user dari SharedPreferences
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userData = prefs.getString('user_data');
+
+    if (userData != null) {
+      var user = jsonDecode(userData);
+      setState(() {
+        userName = user['name'] ?? 'User Name';
+        jobPosition = user['job_position'] ?? 'Job Position';
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +53,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => MainScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => MainScreen(
+                                selectedIndex:
+                                    0)), // Provide a default index or the desired index
                       );
                     },
+
                     splashColor:
                         Colors.grey.withOpacity(0.3), // Efek splash abu-abu
                     highlightColor: Colors.grey
@@ -52,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     'Profile',
                     style: GoogleFonts.dmSans(
                       color: Colors.black,
-                      fontSize: 18, // Adjust the font size as needed
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -81,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       const SizedBox(height: 5),
                       Text(
-                        'Riky Raharjo',
+                        '$userName',
                         style: GoogleFonts.dmSans(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -89,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       Text(
-                        'Software Development',
+                        '$jobPosition',
                         style: GoogleFonts.dmSans(
                           fontSize: 16,
                           color: Colors.grey,

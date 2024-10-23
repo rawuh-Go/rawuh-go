@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class EditLeaveScreen extends StatefulWidget {
+  final int leaveId;
   final String date;
   final String leaveType;
   final String reason;
@@ -13,6 +17,7 @@ class EditLeaveScreen extends StatefulWidget {
   final Color statusColor;
 
   const EditLeaveScreen({
+    required this.leaveId,
     required this.date,
     required this.leaveType,
     required this.reason,
@@ -50,10 +55,12 @@ class _EditLeaveScreenState extends State<EditLeaveScreen> {
     reasonController = TextEditingController(text: widget.reason);
     startDateController = TextEditingController(text: widget.startDate);
     endDateController = TextEditingController(text: widget.endDate);
+    _selectedLeaveType = widget.leaveType; // Set selected leave type
   }
 
   @override
   void dispose() {
+    leaveTypes.dispose();
     reasonController.dispose();
     startDateController.dispose();
     endDateController.dispose();
@@ -74,264 +81,301 @@ class _EditLeaveScreenState extends State<EditLeaveScreen> {
     }
   }
 
+  // Function to save the updated leave request
+  void _updateLeave() async {
+    final updatedLeave = {
+      'leaveType': leaveTypes.text,
+      'reason': reasonController.text,
+      'startDate': startDateController.text,
+      'endDate': endDateController.text,
+      'attachments': uploadedFiles,
+    };
+
+    print(
+        'Updated Leave: $updatedLeave'); // Debug print to see the updated data
+
+    // Send the update request to the API here
+    final url =
+        'http://127.0.0.1:8000/api/leaves/${widget.leaveId}'; // Adjust this line as necessary
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(updatedLeave),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle successful response
+        Navigator.pop(context); // Go back or show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Leave updated successfully!')),
+        );
+      } else {
+        // Handle error response
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update leave.')),
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromRGBO(255, 255, 255, 0.95),
-        body: SafeArea(
-          child: Column(
-            children: [
-              // AppBar section with back button and leaveTypes
-              Padding(
-                padding: const EdgeInsets.only(top: 30, left: 16, right: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      splashColor: Colors.grey.withOpacity(0.3),
-                      highlightColor: Colors.grey.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(10),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.95),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // AppBar section with back button and leaveTypes
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 16, right: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    splashColor: Colors.grey.withOpacity(0.3),
+                    highlightColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Edit Leave ',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                  ),
+                  Text(
+                    'Edit Leave',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                    const SizedBox(width: 40), // Empty space for alignment
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 40), // Empty space for alignment
+                ],
               ),
-              const SizedBox(height: 16),
-              // Edit content
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Date Section
-                          Container(
-                            width: double.infinity,
-                            height: 40,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF2A5867),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
+            ),
+            const SizedBox(height: 16),
+            // Edit content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Card(
+                  color: Colors.white,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Date Section
+                        Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF2A5867),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              widget.date,
+                              style: GoogleFonts.dmSans(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            child: Center(
-                              child: Text(
-                                widget.date,
-                                style: GoogleFonts.dmSans(
-                                  color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Status Section
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Status:',
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
                               ),
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: widget.statusColor.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  widget.status,
+                                  style: TextStyle(
+                                    color: widget.statusColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Leave Type Dropdown
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: DropdownButtonFormField<String>(
+                            value: _selectedLeaveType,
+                            decoration: const InputDecoration(
+                              labelText: 'Leave Type',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: leaveType.map((String type) {
+                              return DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(type),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedLeaveType = newValue;
+                                leaveTypes.text = newValue ?? '';
+                              });
+                            },
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+                        // Editable reason
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: TextField(
+                            controller: reasonController,
+                            decoration: const InputDecoration(
+                              labelText: 'Reason',
+                              border: OutlineInputBorder(),
+                            ),
+                            maxLines: 3,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Editable Leave Date
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: TextField(
+                            controller: startDateController,
+                            decoration: const InputDecoration(
+                              labelText: 'Start Date',
+                              suffixIcon: Icon(Icons.calendar_today),
+                              border: OutlineInputBorder(),
                             ),
                           ),
-                          const SizedBox(height: 16),
-
-                          // Status Section
+                        ),
+                        const SizedBox(height: 20),
+                        // Editable Leave Date
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: TextField(
+                            controller: endDateController,
+                            decoration: const InputDecoration(
+                              labelText: 'End Date',
+                              border: OutlineInputBorder(),
+                              suffixIcon: Icon(Icons.calendar_today),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // File upload section
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.attach_file, size: 18),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: pickFile,
+                                child: const Text(
+                                  'Upload File (png, jpg, pdf)',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2A5867),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Show uploaded files
+                        if (uploadedFiles.isNotEmpty)
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Status:',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: widget.statusColor.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    widget.status,
-                                    style: TextStyle(
-                                      color: widget.statusColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          // Leave Type Dropdown
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: DropdownButtonFormField<String>(
-                              value: _selectedLeaveType ?? leaveTypes.text,
-                              decoration: const InputDecoration(
-                                labelText: 'Leave Type',
-                                border: OutlineInputBorder(),
-                              ),
-                              items: leaveType.map((String type) {
-                                return DropdownMenuItem<String>(
-                                  value: type,
-                                  child: Text(type),
+                              children: uploadedFiles.map((file) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Text(file),
                                 );
                               }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedLeaveType = newValue;
-                                  leaveTypes.text = newValue ?? '';
-                                });
-                              },
                             ),
                           ),
+                        const SizedBox(height: 20),
 
-                          const SizedBox(height: 16),
-                          // Editable reason
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: TextField(
-                              controller: reasonController,
-                              decoration: const InputDecoration(
-                                labelText: 'Reason',
-                                border: OutlineInputBorder(),
-                              ),
-                              maxLines: 3,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          // Editable Leave Date
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: TextField(
-                              controller: startDateController,
-                              decoration: const InputDecoration(
-                                labelText: 'Start Date',
-                                suffixIcon: Icon(Icons.calendar_today),
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          // Editable Leave Date
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: TextField(
-                              controller: endDateController,
-                              decoration: const InputDecoration(
-                                labelText: 'End Date',
-                                border: OutlineInputBorder(),
-                                suffixIcon: Icon(Icons.calendar_today),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          // File upload section
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.attach_file, size: 18),
-                                const SizedBox(width: 8),
-                                ElevatedButton(
-                                  onPressed: pickFile,
-                                  child: const Text(
-                                    'Upload File (png, jpg, pdf)',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2A5867),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Show uploaded files
-                          if (uploadedFiles.isNotEmpty)
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: uploadedFiles.map((file) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 4.0),
-                                    child: Text(file),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          const SizedBox(height: 20),
-
-                          // Save Button
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Container(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Save logic here
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2A5867),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24.0),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Update Leave',
-                                  style: TextStyle(color: Colors.white),
+                        // Save Button
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Container(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed:
+                                  _updateLeave, // Call the update function
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF2A5867),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24.0),
                                 ),
                               ),
+                              child: const Text(
+                                'Update Leave',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
+                        ),
 
-                          const SizedBox(height: 20),
-                        ],
-                      ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        )
-        );
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,9 +1,40 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'profile_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String userName = '';
+  String jobPosition = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  // Fungsi untuk mengambil data user dari SharedPreferences
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userData = prefs.getString('user_data');
+
+    if (userData != null) {
+      var user = jsonDecode(userData);
+      setState(() {
+        userName = user['name'] ?? 'User Name';
+        jobPosition = user['job_position'] ?? 'Job Position';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get the screen width and height
@@ -76,7 +107,7 @@ class HomeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Riky Raharjo",
+                                  '$userName',
                                   style: GoogleFonts.poppins(
                                     fontSize: screenWidth *
                                         0.04, // 4% of screen width
@@ -85,10 +116,10 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  "Software Developer",
+                                  '$jobPosition',
                                   style: GoogleFonts.poppins(
                                     fontSize: screenWidth *
-                                        0.035, // 3.5% of screen width
+                                        0.030, // 3.5% of screen width
                                     fontWeight: FontWeight.w400,
                                     color: Colors.white,
                                   ),
@@ -319,7 +350,7 @@ class HomeScreen extends StatelessWidget {
         _buildServiceItem(
             context, "Assignment", "assigment.png", '/assigment-screen'),
         _buildServiceItem(
-            context, "Todo List", "todo_list.png", '/assigment-screen'),
+            context, "Todo List", "todo_list.png", '/todolist-screen'),
       ],
     );
   }

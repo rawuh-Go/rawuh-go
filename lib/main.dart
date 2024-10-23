@@ -7,9 +7,9 @@ import 'screens/change_password.dart';
 import 'screens/history_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/leave_screen.dart';
-import 'screens/notif_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/splash_screen.dart';
+import 'screens/todolist_screen.dart';
 import 'widget/bottom_nav_bar.dart';
 
 void main() {
@@ -24,16 +24,16 @@ class MyApp extends StatelessWidget {
       title: 'Rawuh-Go App',
       home: SplashScreen(),
       routes: {
-        '/home': (context) => MainScreen(),
+        '/home': (context) => MainScreen(selectedIndex: 0),
         '/history': (context) =>
             HistoryScreen(), // Tambahkan route untuk HistoryScreen
         '/camera': (context) => CameraScreen(),
-        '/notifications': (context) => const NotificationScreen(),
+        '/todolist-screen': (context) => TodolistScreen(),
         '/profile': (context) => ProfileScreen(),
         '/change-password': (context) => ChangePasswordScreen(),
         '/leave-screen': (context) =>
             LeaveScreen(), // Tambahkan route leave-screen
-        '/assigment-screen': (context) => AssigmentScreen(),
+        '/assigment-screen': (context) => AssignmentScreen(),
 
         // Tambahkan route assignment-screen
       }, // Start with the SplashScreen
@@ -42,20 +42,28 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
+  final int selectedIndex; // Define the selectedIndex property
+
+  const MainScreen({Key? key, required this.selectedIndex}) : super(key: key);
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   final List<Widget> _pages = [
     HomeScreen(),
     HistoryScreen(),
     CameraScreen(),
-    const NotificationScreen(),
+    TodolistScreen(),
     ProfileScreen(),
   ];
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.selectedIndex;
+  }
 
   void _onItemTapped(int index) {
     setState(() {

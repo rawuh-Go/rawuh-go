@@ -42,6 +42,10 @@ dependencies:
   image_picker: ^0.8.7+3
   open_file: ^3.2.1
   camera: ^0.10.0+4 
+  http: 1.2.2
+  shared_preferences: ^2.3.2
+  intl: ^0.19.0
+  path_provider: ^2.0.11
 
 
 dev_dependencies:

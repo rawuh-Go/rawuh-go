@@ -1,10 +1,43 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile_rawuhgo/models/attendance_model.dart';
 
-class AttendanceDetailScreen extends StatelessWidget {
-  final Map<String, dynamic> data;
+class AttendanceDetailScreen extends StatefulWidget {
+  final int attendanceId;
 
-  AttendanceDetailScreen({required this.data});
+  const AttendanceDetailScreen({required this.attendanceId});
+
+  @override
+  _AttendanceDetailScreenState createState() => _AttendanceDetailScreenState();
+}
+
+class _AttendanceDetailScreenState extends State<AttendanceDetailScreen> {
+  Attendance? attendanceDetail;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAttendanceDetail(); // Panggil data saat inisialisasi layar
+  }
+
+  Future<void> fetchAttendanceDetail() async {
+    final url = 'http://127.0.0.1:8000/api/attendances/${widget.attendanceId}';
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        setState(() {
+          attendanceDetail = Attendance.fromJson(data); // Parse data ke model
+        });
+      }
+      // Di sini tidak ada penanganan error, sehingga pesan tidak ditampilkan
+    } catch (e) {
+      print('Error: $e'); // Anda bisa menghapus atau menyesuaikan ini
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +61,8 @@ class AttendanceDetailScreen extends StatelessWidget {
                       highlightColor: Colors.grey.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(10),
                       child: Row(
-                        children: [
-                          const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.black,
-                          ),
+                        children: const [
+                          Icon(Icons.arrow_back_ios, color: Colors.black),
                         ],
                       ),
                     ),
@@ -44,66 +74,65 @@ class AttendanceDetailScreen extends StatelessWidget {
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(
-                        width:
-                            48), // You can add another widget here if needed for right side alignment
+                    const SizedBox(width: 48),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
-              // Tanggal
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2A5867),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    data['day'],
-                    style: GoogleFonts.dmSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              // Wrap the rest of the content in SingleChildScrollView
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // Detail CHECK IN
-                      _buildAttendanceDetailCard(
-                        'CHECK IN',
-                        'early',
-                        '08:00:00 WIB',
-                        '-7.760040, 110.408550',
-                        'Jl. Ring Road Utara, Ngringin, Condongcatur',
-                        data['check_in_status'],
-                        Colors.green,
-                        'assets/img/main_page/absen.png',
+              attendanceDetail != null
+                  ? Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            // Tanggal
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF2A5867),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  attendanceDetail!.day,
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            // Detail CHECK IN
+                            _buildAttendanceDetailCard(
+                              'CHECK IN',
+                              attendanceDetail!.checkInStatus,
+                              attendanceDetail!.checkInTime,
+                              '${attendanceDetail!.datangLatitude}, ${attendanceDetail!.datangLongitude}',
+                              'Your Address for Check In',
+                              Colors.green,
+                              Icons.login_rounded,
+                            ),
+                            const SizedBox(height: 16),
+                            // Detail CHECK OUT
+                            _buildAttendanceDetailCard(
+                              'CHECK OUT',
+                              attendanceDetail!.checkOutStatus,
+                              attendanceDetail!.checkOutTime,
+                              '${attendanceDetail!.pulangLatitude}, ${attendanceDetail!.pulangLongitude}',
+                              'Your Address for Check Out',
+                              Colors.red,
+                              Icons.logout_rounded,
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                      // Detail CHECK OUT
-                      _buildAttendanceDetailCard(
-                        'CHECK OUT',
-                        'late',
-                        '17:09:00 WIB',
-                        '-7.760040, 110.408550',
-                        'Jl. Ring Road Utara, Ngringin, Condongcatur',
-                        data['check_out_status'],
-                        Colors.red,
-                        'assets/img/main_page/absen.png', // Attachment image path
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                    )
+                  : const SizedBox
+                      .shrink(), // Menghilangkan tampilan jika tidak ada data
             ],
           ),
         ),
@@ -111,25 +140,21 @@ class AttendanceDetailScreen extends StatelessWidget {
     );
   }
 
-  // Fungsi untuk menampilkan detail check-in/check-out
   Widget _buildAttendanceDetailCard(
     String title,
-    String status,
+    String statusText,
     String time,
     String position,
     String address,
-    String statusText,
     Color statusColor,
-    String attachmentPath,
+    IconData iconData,
   ) {
     return Container(
-      margin: const EdgeInsets.only(
-          top: 0), // Adjust margin to align with the top box
+      margin: const EdgeInsets.only(top: 0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(
-            0), // No border radius to make it look unified
+        borderRadius: BorderRadius.circular(0),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -148,9 +173,7 @@ class AttendanceDetailScreen extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    title == 'CHECK IN'
-                        ? Icons.login_rounded
-                        : Icons.logout_rounded,
+                    iconData,
                     color: statusColor,
                   ),
                   const SizedBox(width: 8),
@@ -162,30 +185,21 @@ class AttendanceDetailScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: statusColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      statusText,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              Text(
-                status == 'early' ? 'early' : 'late',
-                style: GoogleFonts.dmSans(
-                  fontSize: 12,
-                  color: status == 'early' ? Colors.green : Colors.red,
-                  fontWeight: FontWeight.bold,
+              // Tampilkan hanya satu status
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: statusText == 'late' ? Colors.red : Colors.green,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  statusText,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
@@ -209,15 +223,6 @@ class AttendanceDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          // Distance
-          Text(
-            'Distance: 27 Meter',
-            style: GoogleFonts.dmSans(
-              fontSize: 14,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 8),
           // Address
           Text(
             'Address: $address',
@@ -225,29 +230,6 @@ class AttendanceDetailScreen extends StatelessWidget {
               fontSize: 14,
               color: Colors.black87,
             ),
-          ),
-          const SizedBox(height: 8),
-          // Attachment
-          Row(
-            children: [
-              Text(
-                'Attachment: ',
-                style: GoogleFonts.dmSans(
-                  fontSize: 14,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(width: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  attachmentPath,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
           ),
         ],
       ),

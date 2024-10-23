@@ -1,5 +1,8 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class ApplyLeaveScreen extends StatefulWidget {
   const ApplyLeaveScreen({Key? key}) : super(key: key);
@@ -13,32 +16,80 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
   final _reasonController = TextEditingController();
+
   final List<String> leaveType = [
     'Sick Leave',
     'Personal Leave',
     'Annual Leave',
     'Marriage Leave',
   ];
+
   String? _selectedLeaveType;
   List<String> uploadedFiles = [];
+  String? userId;
 
   @override
   void initState() {
     super.initState();
-    // Set the current date for Start Date and End Date
     DateTime currentDate = DateTime.now();
-    _startDateController.text =
-        "${currentDate.toLocal()}".split(' ')[0]; // Format: YYYY-MM-DD
-    _endDateController.text = "${currentDate.add(Duration(days: 1)).toLocal()}"
-        .split(' ')[0]; // End date: Next day
+    _startDateController.text = "${currentDate.toLocal()}".split(' ')[0];
+    _endDateController.text =
+        "${currentDate.add(Duration(days: 1)).toLocal()}".split(' ')[0];
+
+    userId = getCurrentUserId();
   }
 
-  void pickFile() {
-    // Placeholder function for file picking
-    // You can implement file picker functionality here
-    setState(() {
-      uploadedFiles.add("example-file.pdf"); // Example file
-    });
+  String getCurrentUserId() {
+    // Implement your logic to retrieve the current user ID
+    return '123'; // Replace with actual user ID retrieval logic
+  }
+
+  Future<void> pickFile() async {
+    // Allow the user to select files of specific types
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true, // Allow multiple file selection
+      type: FileType.custom, // Specify that we want custom file types
+      allowedExtensions: ['png', 'jpg', 'jpeg', 'pdf'], // Allowed file types
+    );
+
+    if (result != null) {
+      setState(() {
+        // Add the selected files to the list
+        uploadedFiles.addAll(
+            result.paths.where((path) => path != null).map((path) => path!));
+      });
+    }
+  }
+
+  Future<void> applyLeave() async {
+    final url =
+        'http://127.0.0.1:8000/api/leaves/'; // Update this to your actual API endpoint
+    final request = http.MultipartRequest('POST', Uri.parse(url));
+
+    // Attach the user ID and other data
+    request.fields['user_id'] = userId!;
+    request.fields['type_leave'] = _selectedLeaveType!;
+    request.fields['tanggal_mulai'] = _startDateController.text;
+    request.fields['tanggal_selesai'] = _endDateController.text;
+    request.fields['reason'] = _reasonController.text;
+
+    // Attach files
+    for (var file in uploadedFiles) {
+      request.files
+          .add(await http.MultipartFile.fromPath('attachment[]', file));
+    }
+
+    try {
+      final response = await request.send();
+
+      if (response.statusCode == 201) {
+        _showConfirmationDialog(context);
+      } else {
+        _showErrorDialog('Failed to apply leave. Please try again.');
+      }
+    } catch (e) {
+      _showErrorDialog('An error occurred: $e');
+    }
   }
 
   void _showConfirmationDialog(BuildContext context) {
@@ -46,20 +97,20 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white, // Set background color to white
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), // Rounded corners
+            borderRadius: BorderRadius.circular(10.0),
           ),
           content: SizedBox(
-            width: 300, // Width of the dialog
+            width: 300,
             child: Column(
-              mainAxisSize: MainAxisSize.min, // To size the dialog content
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Center(
                   child: Text(
                     "Your request has been sent!",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center, // Center the text
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -68,29 +119,26 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                     "Wait for Approval",
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-                    textAlign: TextAlign.center, // Center the text
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 20),
                 Image.asset(
-                  'assets/img/main_page/applyscreen.png', // Path to your image
-                  height: 100, // Adjust height as needed
-                  width: 100, // Adjust width as needed
-                  fit: BoxFit.cover, // Fit the image
+                  'assets/img/main_page/applyscreen.png',
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
-                    Navigator.pushNamed(
-                        context, '/leave-detail'); // Navigate to Leave Detail
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, '/leave-detail');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xFF2A5867), // Set button color to green
+                    backgroundColor: const Color(0xFF2A5867),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(24.0), // Rounded corners
+                      borderRadius: BorderRadius.circular(24.0),
                     ),
                   ),
                   child: const Text(
@@ -106,6 +154,31 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
     );
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String> getLocalPath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,7 +186,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // AppBar section with back button and "Leave Detail" title
             Padding(
               padding: const EdgeInsets.only(top: 30, left: 16, right: 30),
               child: Row(
@@ -127,8 +199,8 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                     highlightColor: Colors.grey.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                     child: Row(
-                      children: [
-                        const Icon(
+                      children: const [
+                        Icon(
                           Icons.arrow_back_ios,
                           color: Colors.black,
                         ),
@@ -143,7 +215,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(width: 40), // Empty space for alignment
+                  const SizedBox(width: 40),
                 ],
               ),
             ),
@@ -161,7 +233,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Date Section
                         Container(
                           width: double.infinity,
                           height: 40,
@@ -183,7 +254,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Leave Type Dropdown
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: DropdownButtonFormField<String>(
@@ -206,7 +276,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Reason input field
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: TextField(
@@ -219,53 +288,81 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // Start Date input field
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: TextField(
                             controller: _startDateController,
+                            readOnly: true,
                             decoration: const InputDecoration(
                               labelText: 'Start Date',
                               suffixIcon: Icon(Icons.calendar_today),
                               border: OutlineInputBorder(),
                             ),
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2101),
+                              );
+                              if (pickedDate != null) {
+                                setState(() {
+                                  _startDateController.text =
+                                      "${pickedDate.toLocal()}".split(' ')[0];
+                                });
+                              }
+                            },
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // End Date input field
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: TextField(
                             controller: _endDateController,
+                            readOnly: true,
                             decoration: const InputDecoration(
                               labelText: 'End Date',
                               border: OutlineInputBorder(),
                               suffixIcon: Icon(Icons.calendar_today),
                             ),
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2101),
+                              );
+                              if (pickedDate != null) {
+                                setState(() {
+                                  _endDateController.text =
+                                      "${pickedDate.toLocal()}".split(' ')[0];
+                                });
+                              }
+                            },
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // File upload section
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Row(
                             children: [
                               const Icon(Icons.attach_file, size: 18),
                               const SizedBox(width: 8),
-                              ElevatedButton(
-                                onPressed: pickFile,
-                                child: const Text(
-                                  'Upload File (png, jpg, pdf)',
-                                  style: TextStyle(color: Colors.white),
+                              if (uploadedFiles
+                                  .isEmpty) // Show button only if no files uploaded
+                                ElevatedButton(
+                                  onPressed: pickFile,
+                                  child: const Text(
+                                    'Upload File (png, jpg, pdf)',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2A5867),
+                                  ),
                                 ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2A5867),
-                                ),
-                              ),
                             ],
                           ),
                         ),
-                        // Show uploaded files
                         if (uploadedFiles.isNotEmpty)
                           Padding(
                             padding:
@@ -282,25 +379,18 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                             ),
                           ),
                         const SizedBox(height: 20),
-                        // Save Button
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Container(
-                            width: double
-                                .infinity, // Makes the button width as wide as the parent container
+                            width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: () {
-                                _showConfirmationDialog(
-                                    context); // Show the dialog here
-                              },
+                              onPressed: applyLeave,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF2A5867),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical:
-                                        16.0), // Vertical padding for better button height
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16.0),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      24.0), // Optional: To add rounded corners to the button
+                                  borderRadius: BorderRadius.circular(24.0),
                                 ),
                               ),
                               child: const Text(
@@ -310,7 +400,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 20),
                       ],
                     ),
