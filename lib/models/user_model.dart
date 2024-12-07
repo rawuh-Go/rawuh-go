@@ -1,32 +1,40 @@
 class UserModel {
+  final int id;
   final String name;
   final String email;
-  final String phoneNumber;
-  final String jobPosition;
-  final String address;
-  final String country;
   final String gender;
+  final String address;
+  final String phoneNumber;
+  final String country;
+  final String jobPosition;
+  final String createdAt;
+  final String? image; // Optional for user image
 
   UserModel({
+    required this.id,
     required this.name,
     required this.email,
-    required this.phoneNumber,
-    required this.jobPosition,
-    required this.address,
-    required this.country,
     required this.gender,
+    required this.address,
+    required this.phoneNumber,
+    required this.country,
+    required this.jobPosition,
+    required this.createdAt,
+    this.image,
   });
 
-  // Factory method untuk mempermudah parsing dari JSON
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
-      phoneNumber: json['phone_number'] ?? '',
-      jobPosition: json['job_position'] ?? '',
-      address: json['address'] ?? '',
-      country: json['country'] ?? 'Indonesia',
-      gender: json['gender'] == 'laki-laki' ? 'laki-laki' : 'perempuan',
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      gender: json['gender'],
+      address: json['address'],
+      phoneNumber: json['phone_number'],
+      country: json['country'],
+      jobPosition: json['job_position'],
+      createdAt: json['created_at'],
+      image: json['image'], // Adjust based on your API response
     );
   }
 }

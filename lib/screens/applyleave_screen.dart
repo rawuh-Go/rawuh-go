@@ -198,8 +198,8 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                     splashColor: Colors.grey.withOpacity(0.3),
                     highlightColor: Colors.grey.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           Icons.arrow_back_ios,
                           color: Colors.black,

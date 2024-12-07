@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String userName = '';
   String jobPosition = '';
+  int userId = 0;
 
   void initState() {
     super.initState();
@@ -27,6 +28,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userData = prefs.getString('user_data');
+    userId =
+        prefs.getInt('user_id') ?? 0; // Ambil userId dari SharedPreferences
 
     if (userData != null) {
       var user = jsonDecode(userData);
@@ -36,6 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildMenuItem(context, Icons.person, 'Edit Profile',
-                      EditProfileScreen()),
+                      EditProfileScreen(userId: userId)),
                   buildMenuItem(context, Icons.lock, 'Change Password',
                       ChangePasswordScreen()),
                   buildMenuItem(context, Icons.logout, 'Logout', LoginScreen()),
